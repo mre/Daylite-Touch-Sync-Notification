@@ -9,3 +9,30 @@ Whenever a user syncs with Daylite, this file gets modified.
 A script will be triggered on the server side, which sends a message to a client (presumably with
 websockets or a push service). On the client side, another script receives the
 message and displays an OSX notification of the synchronization.
+
+
+Running the script in the background
+------------------------------------
+
+If you want to have the script running as a daemon process which starts automatically, you can use launchctl and a plist file on Mac OS X.
+
+To have it run as a daemon process, move the included plist file into the
+LaunchAgents directory:
+
+    mv de.matthias-endler.dtouch.plist ~/Library/LaunchAgents/.
+
+Move the client program to the `/usr/bin` directory:
+
+    mv dtouchclient.py /usr/bin
+
+Then use launchctl to load the plist from a terminal:
+
+    launchctl load ~/Library/LaunchAgents/de.matthias-endler.dtouch.plist
+
+This will load that script and immediately run the program in the <string> element beneath <key>Program</key>. You can also specify arguments for the program using a <ProgramArguments> node with an array of <string> elements. For more information see the launchd.plist man page
+
+If you want to remove the script, you can use the unload command of launchctl:
+
+launchctl unload ~/Library/LaunchAgents/de.matthias-endler.dtouch.plist
+
+(Instructions adapted from [mnem on StackOverflow](http://stackoverflow.com/a/9523030/270334))
