@@ -6,10 +6,17 @@ This is useful for admins, who want to be sure that the Daylite Server is correc
 
 The software will use watchdog to check changes in the Daylite Touch logfile.
 Whenever a user syncs with Daylite, this file gets modified.
-A script will be triggered on the server side, which sends a message to a client (presumably with
-websockets or a push service). On the client side, another script receives the
+A script will be triggered on the server side, which sends a message to a client (using [pusher](http://www.pusher.com)). On the client side, another script receives the
 message and displays an OSX notification of the synchronization.
 
+
+Howto
+-----
+
+1. Get an API key at [pusher.com](http://www.pusher.com)
+2. Insert your key into `dtouchclient.py` and `dtouchserver.py`
+3. Start `dtouchserver.py` on your server.
+4. Start `dtouchclient.py` on your client.
 
 Running the script in the background
 ------------------------------------
