@@ -43,6 +43,6 @@ This will load that script and immediately run the program in the <string> eleme
 
 If you want to remove the script, you can use the unload command of launchctl:
 
-launchctl unload ~/Library/LaunchAgents/de.matthias-endler.dtouch.plist
+    launchctl unload ~/Library/LaunchAgents/de.matthias-endler.dtouch.plist
 
 (Instructions adapted from [mnem on StackOverflow](http://stackoverflow.com/a/9523030/270334))
