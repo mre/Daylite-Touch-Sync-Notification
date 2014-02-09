@@ -24,7 +24,7 @@ Howto
 Running the script in the background
 ------------------------------------
 
-If you want to have the script running as a daemon process which starts automatically, you can use launchctl and a plist file on Mac OS X.
+If you want to have the script running as a daemon process which starts automatically, you can use `launchctl` and a plist file on Mac OS X.
 
 To have it run as a daemon process, move the included plist file into the
 LaunchAgents directory:
@@ -41,7 +41,7 @@ Then use launchctl to load the plist from a terminal:
 
 This will load that script and immediately run the program in the <string> element beneath <key>Program</key>. You can also specify arguments for the program using a <ProgramArguments> node with an array of <string> elements. For more information see the launchd.plist man page
 
-If you want to remove the script, you can use the unload command of launchctl:
+If you want to remove the script, you can use the unload command of `launchctl`:
 
     launchctl unload ~/Library/LaunchAgents/de.matthias-endler.dtouch.plist
 
