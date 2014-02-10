@@ -13,7 +13,7 @@ def get_last_login(logfile):
   E.g. from commandline: tail -n 11 logfile | grep -A 10 Login
   """
   # Always show 11 lines on tail command
-  tail = TAIL.bake("-n", 11)
+  tail = TAIL.bake("-n", 15)
   # Print 10 lines of trailing context after each match
   grep = GREP.bake("-A", 10)
   try:
@@ -47,7 +47,7 @@ last_login = get_last_login(logfile)
 if not last_login:
     exit()
 
-username = get_username(last_log)
-outgoing, incoming = get_changes(last_log)
+username = get_username(last_login)
+outgoing, incoming = get_changes(last_login)
 
 print "Sync from {} (OUT:{}/IN:{})".format(username, outgoing, incoming)
