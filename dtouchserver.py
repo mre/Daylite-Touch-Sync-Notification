@@ -1,11 +1,46 @@
+#!/usr/bin/python
+
 """
 Monitor the Daylite Touch logfile and
 notify the administrator of any syncs.
+
+A sync is an up- or download of data
+to a mobile device (iPad, iPhone)
+
+This is useful to check the health of
+a network with many mobile clients.
 """
 
+# Needed for monitoring
+import time
+from watchdog.observers import Observer
+from watchdog.events import FileSystemEventHandler
+
+# Needed to see what has changed
 from sh import TAIL, GREP
 import re
 
+DAYLITE_PATH = "/Library/Logs/Daylite Server 4/"
+FILENAME = "DLTouchd.log"
+logfile = DAYLITE_PATH + FILENAME
+
+class SyncHandler(FileSystemEventHandler):
+    """
+    Handles Daylite Touch syncs.
+    """
+    def on_modified(self, event):
+        """
+        Gets called on modifications to the Daylite Touch logfile
+        Try to get the user and the number of changes and send a push
+        notification to a client (e.g. the administrator of the network)
+        """
+        try:
+            last_login = get_last_login(logfile)
+            username = get_username(last_login)
+            outgoing, incoming = get_changes(last_login)
+            print "Sync from {} (OUT:{}/IN:{})".format(username, outgoing, incoming)
+        except Exception, e:
+            print e
 
 def get_last_login(logfile):
   """
@@ -41,13 +76,18 @@ def get_changes(last_log):
   incoming = m.group("incoming")
   return outgoing, incoming
 
-logfile = "/Library/Logs/Daylite Server 4/DLTouchd.log"
+if __name__ == "__main__":
+    """
+    Watch the Daylite Touch Sync log for changes.
+    """
+    sync_handler = SyncHandler()
+    observer = Observer()
+    observer.schedule(sync_handler, path=DAYLITE_PATH, recursive=False)
+    observer.start()
 
-last_login = get_last_login(logfile)
-if not last_login:
-    exit()
-
-username = get_username(last_login)
-outgoing, incoming = get_changes(last_login)
-
-print "Sync from {} (OUT:{}/IN:{})".format(username, outgoing, incoming)
+    try:
+        while True:
+            time.sleep(2)
+    except KeyboardInterrupt:
+        observer.stop()
+    observer.join()
