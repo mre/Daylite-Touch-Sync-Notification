@@ -3,7 +3,7 @@ Monitor the Daylite Touch logfile and
 notify the administrator of any syncs.
 """
 
-from sh import tail, grep
+from sh import TAIL, GREP
 import re
 
 
@@ -12,7 +12,15 @@ def get_last_login(logfile):
   Get last login from whole logfile
   E.g. from commandline: tail -n 11 logfile | grep -A 10 Login
   """
-  return str(grep(tail("-n", 11, logfile), "-A", 10, "Login"))
+  # Always show 11 lines on tail command
+  tail = TAIL.bake("-n", 11)
+  # Print 10 lines of trailing context after each match
+  grep = GREP.bake("-A", 10)
+  try:
+      # Look for "Login" in logfile
+      return str(grep(tail(logfile), "Login"))
+  except:
+      return None
 
 def get_username(last_log):
   """
@@ -33,9 +41,12 @@ def get_changes(last_log):
   incoming = m.group("incoming")
   return outgoing, incoming
 
-logfile = "/Library/Logs/Daylite\ Server\ 4/DLTouchd.log"
-#logfile = "DLTouchd.log"
-last_log = get_last_login(logfile)
+logfile = "/Library/Logs/Daylite Server 4/DLTouchd.log"
+
+last_login = get_last_login(logfile)
+if not last_login:
+    exit()
+
 username = get_username(last_log)
 outgoing, incoming = get_changes(last_log)
 
