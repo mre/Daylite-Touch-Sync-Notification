@@ -17,24 +17,26 @@ Whenever a user syncs with Daylite, this file gets modified and a message is bro
 
 ### Client
 
-On the client side, another script receives the pusher message and displays an OSX notification popup about the synchronization.
-You can write new clients with ease. Any platform and language is supported. Just subscribe to the pusher channel and you will receive updates automatically.
+On the client machine, another script receives the pusher message and displays an OSX notification popup for each synchronization.
+You can write new clients with ease. Any platform and language is supported. Just subscribe to the pusher channel and you will receive updates automatically. I'll happily accept pull requests.
+
+
 
 Howto
 -----
 
 1. Register at [pusher.com](http://www.pusher.com)
-2. Insert your key into `dtouchclient.py`
-3. Insert your app id, key and secret into `dtouchserver.py`
+2. Insert your pusher key into `dtouchclient.py`.
+3. Insert your pusher app-id, key and secret into `dtouchserver.py`.
 4. Start `dtouchserver.py` on your server.
 5. Start `dtouchclient.py` on your client.
+
 
 
 Running the script in the background
 ------------------------------------
 
 If you want to have the script running as a daemon process, which starts automatically, you can use `launchctl` and a plist file on Mac OS X. Here is how.
-
 
 ### On the server
 

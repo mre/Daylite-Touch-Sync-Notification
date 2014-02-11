@@ -20,6 +20,14 @@ from watchdog.events import FileSystemEventHandler
 from sh import TAIL, GREP
 import re
 
+# Needed for notifications
+import pusher
+
+# Specify your pusher API credentials
+app_id = 'XXXXX'
+key = 'XXXXXXXXXXXXXXXXXXXX'
+secret = 'XXXXXXXXXXXXXXXXXXXX'
+
 DAYLITE_PATH = "/Library/Logs/Daylite Server 4/"
 FILENAME = "DLTouchd.log"
 logfile = DAYLITE_PATH + FILENAME
@@ -35,10 +43,16 @@ class SyncHandler(FileSystemEventHandler):
         notification to a client (e.g. the administrator of the network)
         """
         try:
+            # Get sync data
             last_login = get_last_login(logfile)
             username = get_username(last_login)
             outgoing, incoming = get_changes(last_login)
-            print "Sync from {} (OUT:{}/IN:{})".format(username, outgoing, incoming)
+
+            # Send a push notification
+            notification = 'Sync from {} (OUT:{}/IN:{})'.format(username, outgoing, incoming)
+            p = pusher.Pusher(app_id=app_id, key=key, secret=secret)
+            p['dtouch_channel'].trigger('sync', notification)
+
         except Exception, e:
             print e
 
@@ -47,9 +61,9 @@ def get_last_login(logfile):
   Get last login from whole logfile
   E.g. from commandline: tail -n 11 logfile | grep -A 10 Login
   """
-  # Always show 11 lines on tail command
+  # Look for a login within the last n lines of the logfile
   tail = TAIL.bake("-n", 15)
-  # Print 10 lines of trailing context after each match
+  # Print n lines of trailing context after each login
   grep = GREP.bake("-A", 10)
   try:
       # Look for "Login" in logfile
@@ -91,3 +105,5 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         observer.stop()
     observer.join()
+
+

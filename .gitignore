@@ -34,3 +34,7 @@ nosetests.xml
 .mr.developer.cfg
 .project
 .pydevproject
+
+# Omit own API keys
+dtouchserver_real.py
+dtouchclient_real.py

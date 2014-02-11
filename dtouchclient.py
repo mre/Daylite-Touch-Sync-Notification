@@ -1,15 +1,33 @@
 #!/usr/bin/env python
 
-import sys
-sys.path.append('..')
+"""
+Monitor the Daylite Touch logfile and
+notify the administrator of any syncs.
+
+A sync is an up- or download of data
+to a mobile device (iPad, iPhone)
+
+This is useful to check the health of
+a network with many mobile clients.
+
+This is the CLIENT script.
+Run this file on the machine where you
+want to receive notifications about the
+syncs.
+"""
+
 
 import time
 import pusherclient
-
-global pusher
+import sh
 
 def sync_callback(data):
-    print "Sync Callback: %s" % data
+    """
+    Show a notification about the sync.
+    """
+    title = "Daylite sync"
+    cmd = '-e display notification {} with title "{}"'.format(data, title)
+    sh.osascript(cmd)
 
 def connect_handler(data):
     channel = pusher.subscribe("dtouch_channel")
@@ -18,7 +36,7 @@ def connect_handler(data):
 if __name__ == '__main__':
 
     # YOUR APPKEY HERE
-    appkey = 'XXXXXXXXXX'
+    appkey = 'XXXXXXXXXXXXXXXXXXXX'
 
     pusher = pusherclient.Pusher(appkey)
 
@@ -27,3 +45,4 @@ if __name__ == '__main__':
 
     while True:
         time.sleep(1)
+
