@@ -5,44 +5,63 @@ What is it?
 -----------
 
 Monitor Daylite Touch syncs on your Mac.
-This is useful for admins, who want to be sure that the Daylite Server is correctly working.
+This is useful for admins, who want to be sure that the Daylite Server is working correctly.
 
-The software will use [watchdog](https://pypi.python.org/pypi/watchdog) to check changes in the Daylite Touch logfile.
-Whenever a user syncs with Daylite, this file gets modified.
-A script will be triggered on the server side, which sends a message to a client (using [pusher](http://www.pusher.com)). On the client side, another script receives the
-message and displays an OSX notification of the synchronization.
+The tool consists of two parts, a server and a client script.
 
+### Server
+
+This part runs on the machine with your Daylite Server installed.
+The software uses [watchdog](https://pypi.python.org/pypi/watchdog) to detect changes in the Daylite Touch logfile.
+Whenever a user syncs with Daylite, this file gets modified and a message is broadcasted to all clients (using [pusher](http://www.pusher.com)).
+
+### Client
+
+On the client side, another script receives the pusher message and displays an OSX notification popup about the synchronization.
+You can write new clients with ease. Any platform and language is supported. Just subscribe to the pusher channel and you will receive updates automatically.
 
 Howto
 -----
 
-1. Get an API key at [pusher.com](http://www.pusher.com)
-2. Insert your key into `dtouchclient.py` and `dtouchserver.py`
-3. Start `dtouchserver.py` on your server.
-4. Start `dtouchclient.py` on your client.
+1. Register at [pusher.com](http://www.pusher.com)
+2. Insert your key into `dtouchclient.py`
+3. Insert your app id, key and secret into `dtouchserver.py`
+4. Start `dtouchserver.py` on your server.
+5. Start `dtouchclient.py` on your client.
+
 
 Running the script in the background
 ------------------------------------
 
-If you want to have the script running as a daemon process which starts automatically, you can use `launchctl` and a plist file on Mac OS X.
+If you want to have the script running as a daemon process, which starts automatically, you can use `launchctl` and a plist file on Mac OS X. Here is how.
 
-To have it run as a daemon process, move the included plist file into the
-LaunchAgents directory:
 
-    mv de.matthias-endler.dtouch.plist ~/Library/LaunchAgents/.
+### On the server
 
-Move the client program to the `/usr/bin` directory:
+    # Move the client program to the `/usr/bin` directory:
+    mv dtouchserver.py /usr/bin
 
+    # Move the included plist file into the LaunchAgents directory:
+    mv de.matthias-endler.dtouchserver.plist ~/Library/LaunchAgents/.
+
+    # Then use launchctl to load the plist from a terminal:
+    launchctl load ~/Library/LaunchAgents/de.matthias-endler.dtouchserver.plist
+
+### On the client
+
+    # Move the client program to the `/usr/bin` directory:
     mv dtouchclient.py /usr/bin
 
-Then use launchctl to load the plist from a terminal:
+    # Move the included plist file into the LaunchAgents directory:
+    mv de.matthias-endler.dtouchclient.plist ~/Library/LaunchAgents/.
 
-    launchctl load ~/Library/LaunchAgents/de.matthias-endler.dtouch.plist
+    # Then use launchctl to load the plist from a terminal:
+    launchctl load ~/Library/LaunchAgents/de.matthias-endler.dtouchclient.plist
 
-This will load that script and immediately run the program in the <string> element beneath <key>Program</key>. You can also specify arguments for the program using a <ProgramArguments> node with an array of <string> elements. For more information see the launchd.plist man page
+This will load that script and immediately run the program. For more information see the launchd.plist man page
 
-If you want to remove the script, you can use the unload command of `launchctl`:
+If you ever want to remove the script, you can use the unload command of `launchctl`, e.g.:
 
-    launchctl unload ~/Library/LaunchAgents/de.matthias-endler.dtouch.plist
+    launchctl unload ~/Library/LaunchAgents/de.matthias-endler.dtouchclient.plist
 
 (Instructions adapted from [mnem on StackOverflow](http://stackoverflow.com/a/9523030/270334))

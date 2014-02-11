@@ -3,7 +3,7 @@
 <plist version="1.0">
   <dict>
     <key>Label</key>
-    <string>de.matthias-endler.dtouch</string>
+    <string>de.matthias-endler.dtouchclient</string>
     <key>Program</key>
     <string>/usr/bin/dtouchclient.py</string>
     <key>KeepAlive</key>
