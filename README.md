@@ -1,5 +1,5 @@
-Daylite Touch Notify - work in progress
-=======================================
+Daylite Touch Notify
+====================
 
 What is it?
 -----------
