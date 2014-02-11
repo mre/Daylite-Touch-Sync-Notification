@@ -40,27 +40,13 @@ If you want to have the script running as a daemon process, which starts automat
 
 ### On the server
 
-    # Move the client program to the `/usr/bin` directory:
-    mv dtouchserver.py /usr/bin
-
-    # Move the included plist file into the LaunchAgents directory:
-    mv de.matthias-endler.dtouchserver.plist ~/Library/LaunchAgents/.
-
-    # Then use launchctl to load the plist from a terminal:
-    launchctl load ~/Library/LaunchAgents/de.matthias-endler.dtouchserver.plist
+    ./setup_server.sh
 
 ### On the client
 
-    # Move the client program to the `/usr/bin` directory:
-    mv dtouchclient.py /usr/bin
+    ./setup_client.sh
 
-    # Move the included plist file into the LaunchAgents directory:
-    mv de.matthias-endler.dtouchclient.plist ~/Library/LaunchAgents/.
-
-    # Then use launchctl to load the plist from a terminal:
-    launchctl load ~/Library/LaunchAgents/de.matthias-endler.dtouchclient.plist
-
-This will load that script and immediately run the program. For more information see the launchd.plist man page
+This will place the scripts in `/usr/bin` and immediately run the program.
 
 If you ever want to remove the script, you can use the unload command of `launchctl`, e.g.:
 
