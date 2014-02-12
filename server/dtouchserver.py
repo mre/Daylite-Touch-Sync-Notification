@@ -15,6 +15,7 @@ a network with many mobile clients.
 import time
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
+import traceback
 
 # Needed to see what has changed
 from sh import TAIL, GREP
@@ -42,6 +43,10 @@ class SyncHandler(FileSystemEventHandler):
         Try to get the user and the number of changes and send a push
         notification to a client (e.g. the administrator of the network)
         """
+        if FILENAME not in event.src_path:
+          # Wrong file was modified. Bail.
+          return
+
         try:
             # Get sync data
             last_login = get_last_login(logfile)
@@ -54,7 +59,8 @@ class SyncHandler(FileSystemEventHandler):
             p['dtouch_channel'].trigger('sync', notification)
 
         except Exception, e:
-            print e
+            # Print the whole traceback for debugging purposes
+            traceback.print_exc()
 
 def get_last_login(logfile):
   """
