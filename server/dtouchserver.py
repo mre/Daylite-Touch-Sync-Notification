@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
 """
-Monitor the Daylite Touch logfile and
-notify the administrator of any syncs.
+Monitor the Daylite Touch syncfile (DLTouchd.log)
+and notify the administrator of any syncs.
 
 A sync is an up- or download of data
 to a mobile device (iPad, iPhone)
@@ -23,6 +23,8 @@ import re
 
 # Needed for notifications
 import pusher
+from os.path import expanduser
+import logging
 
 # Specify your pusher API credentials
 app_id = 'XXXXX'
@@ -31,7 +33,11 @@ secret = 'XXXXXXXXXXXXXXXXXXXX'
 
 DAYLITE_PATH = "/Library/Logs/Daylite Server 4/"
 FILENAME = "DLTouchd.log"
-logfile = DAYLITE_PATH + FILENAME
+syncfile = DAYLITE_PATH + FILENAME
+
+# Store all notifications in a custom logfile
+home = expanduser("~")
+logfile = home + "/Library/Logs/dtouchserver.log"
 
 class SyncHandler(FileSystemEventHandler):
     """
@@ -39,7 +45,7 @@ class SyncHandler(FileSystemEventHandler):
     """
     def on_modified(self, event):
         """
-        Gets called on modifications to the Daylite Touch logfile
+        Gets called on modifications to the Daylite Touch syncfile
         Try to get the user and the number of changes and send a push
         notification to a client (e.g. the administrator of the network)
         """
@@ -49,7 +55,7 @@ class SyncHandler(FileSystemEventHandler):
 
         try:
             # Get sync data
-            last_login = get_last_login(logfile)
+            last_login = get_last_login(syncfile)
             username = get_username(last_login)
             outgoing, incoming = get_changes(last_login)
 
@@ -58,22 +64,24 @@ class SyncHandler(FileSystemEventHandler):
             p = pusher.Pusher(app_id=app_id, key=key, secret=secret)
             p['dtouch_channel'].trigger('sync', notification)
 
+            # Store synchronization in logfile
+            logging.info(notification)
         except Exception, e:
             # Print the whole traceback for debugging purposes
             traceback.print_exc()
 
-def get_last_login(logfile):
+def get_last_login(syncfile):
   """
-  Get last login from whole logfile
-  E.g. from commandline: tail -n 11 logfile | grep -A 10 Login
+  Get last login from whole syncfile
+  E.g. from commandline: tail -n 11 syncfile | grep -A 10 Login
   """
-  # Look for a login within the last n lines of the logfile
+  # Look for a login within the last n lines of the syncfile
   tail = TAIL.bake("-n", 15)
   # Print n lines of trailing context after each login
   grep = GREP.bake("-A", 10)
   try:
-      # Look for "Login" in logfile
-      return str(grep(tail(logfile), "Login"))
+      # Look for "Login" in syncfile
+      return str(grep(tail(syncfile), "Login"))
   except:
       return None
 
@@ -100,6 +108,11 @@ if __name__ == "__main__":
     """
     Watch the Daylite Touch Sync log for changes.
     """
+
+    logging.basicConfig(filename=logfile,
+                        level=logging.DEBUG,
+                        format='%(asctime)s %(message)s')
+
     sync_handler = SyncHandler()
     observer = Observer()
     observer.schedule(sync_handler, path=DAYLITE_PATH, recursive=False)
@@ -111,5 +124,3 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         observer.stop()
     observer.join()
-
-
