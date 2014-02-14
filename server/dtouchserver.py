@@ -113,6 +113,7 @@ if __name__ == "__main__":
                         level=logging.DEBUG,
                         format='%(asctime)s %(message)s')
 
+    logging.info("Starting Daylite Touch sync notification")
     sync_handler = SyncHandler()
     observer = Observer()
     observer.schedule(sync_handler, path=DAYLITE_PATH, recursive=False)
