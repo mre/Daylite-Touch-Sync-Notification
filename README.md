@@ -60,10 +60,10 @@ Troubleshooting
 
 If you can't get it to work, look into the `dtouchserver` logfile first.
 
-    tail `~/Library/Logs/dtouchserver.log`
+    tail ~/Library/Logs/dtouchserver.log
 
 You should see messages like `20XX-XX-XX XX:XX:XX,XXX Sync from user (OUT:9/IN:9)`.
-If not, somethings wrong with the server. Try to run the script directly with
+If not, something's wrong with the server. Try to run the script directly with
 `python dtouchserver.py`.
 
 If everything looks fine until here, check your credentials (API key,...) again.
