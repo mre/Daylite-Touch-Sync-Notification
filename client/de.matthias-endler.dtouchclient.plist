@@ -8,5 +8,13 @@
     <string>/usr/bin/dtouchclient.py</string>
     <key>KeepAlive</key>
     <true/>
+    <!--
+    If you like, you can pipe the script output to a logfile
+    (great for debugging).
+    <key>StandardErrorPath</key>
+    <string>/path/to/your/dtouchclient.log</string>
+    <key>StandardOutPath</key>
+    <string>/path/to/your/dtouchclient.log</string>
+    -->
   </dict>
 </plist>

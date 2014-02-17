@@ -53,3 +53,28 @@ If you ever want to remove the script, you can use the unload command of `launch
     launchctl unload ~/Library/LaunchAgents/de.matthias-endler.dtouchclient.plist
 
 (Instructions adapted from [mnem on StackOverflow](http://stackoverflow.com/a/9523030/270334))
+
+
+Troubleshooting
+---------------
+
+If you can't get it to work, look into the `dtouchserver` logfile first.
+
+    tail `~/Library/Logs/dtouchserver.log`
+
+You should see messages like `20XX-XX-XX XX:XX:XX,XXX Sync from user (OUT:9/IN:9)`.
+If not, somethings wrong with the server. Try to run the script directly with
+`python dtouchserver.py`.
+
+If everything looks fine until here, check your credentials (API key,...) again.
+After that, run the client locally with `python dtouchclient.py`. If you can get
+messages but nothing happens when you run the setup script, you can add a logger
+to your plist file (follow the instructions in `de.matthias-endler.dtouchclient.plist`)
+
+If the logfile tells you about import errors, replace
+
+    #!/usr/bin/env python
+
+inside `dtouchclient.py` with the output of `which python` and run
+`./setup_client` again.
+
