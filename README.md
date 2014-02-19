@@ -1,11 +1,10 @@
 Daylite Touch Notify
 ====================
 
-What is it?
------------
-
 ![How it works](https://raw2.github.com/mre/Daylite-Touch-Sync-Notification/master/howitworks.jpg)
 
+What is it?
+-----------
 
 Monitor Daylite Touch syncs on your Mac.
 This is useful for admins, who want to be sure that the Daylite Server is working correctly.
