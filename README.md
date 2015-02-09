@@ -1,7 +1,7 @@
 Daylite Touch Notify
 ====================
 
-![How it works](https://raw2.github.com/mre/Daylite-Touch-Sync-Notification/master/howitworks.jpg)
+![How it works](howitworks.jpg)
 
 What is it?
 -----------
